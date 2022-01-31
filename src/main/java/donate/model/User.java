@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,6 +15,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 
 @Entity
@@ -34,9 +39,13 @@ public class User {
 	private String profileImage;
 	private BigDecimal balance;
 	@OneToMany(cascade=CascadeType.REMOVE, fetch=FetchType.LAZY)
+	@JsonIgnore
 	private List<Donation> donations;
 	@OneToMany(cascade=CascadeType.REMOVE, fetch=FetchType.LAZY)
+	@JsonIgnore
 	private List<PersonalizationDonateAlert> personalizations;
+	@Enumerated(value = EnumType.STRING)
+	private Role role;
 	
 	
 	public Long getUserId() {
@@ -92,6 +101,12 @@ public class User {
 	}
 	public void setProfileImage(String profileImage) {
 		this.profileImage = profileImage;
+	}
+	public Role getRole() {
+		return role;
+	}
+	public void setRole(Role role) {
+		this.role = role;
 	}
 	
 	
