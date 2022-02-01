@@ -1,12 +1,18 @@
 package donate.service.impl;
 
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import donate.exception.UserFoundException;
+import donate.model.Role;
 import donate.model.User;
 import donate.repository.UserRepository;
 import donate.security.SecurityUser;
@@ -36,6 +42,27 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		User user = userDao.findByUserName(username).orElseThrow(()->
 				new UsernameNotFoundException(username));
 		return SecurityUser.fromUser(user);
+	}
+	
+	
+	public User createUser(User user) throws UserFoundException {
+		
+		Optional<User> local = userDao.findByUserName(user.getUserName());
+		if(local.isPresent()) {
+			
+			throw new UserFoundException();
+		}
+		user.setPassword(this.passwordEncoder().encode(user.getPassword()));
+		user.setRole(Role.USER);
+		user.setProfileImage("noimage.png");
+		userDao.save(user);
+		return user;
+	}
+	
+	
+	private PasswordEncoder passwordEncoder()
+	{
+	    return new BCryptPasswordEncoder();
 	}
 
 

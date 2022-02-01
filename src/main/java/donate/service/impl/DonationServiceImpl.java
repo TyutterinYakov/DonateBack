@@ -1,5 +1,6 @@
 package donate.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import donate.exception.UserNotFoundException;
 import donate.model.Donation;
+import donate.model.DonationRequest;
 import donate.model.User;
 import donate.repository.DonationRepository;
 import donate.repository.UserRepository;
@@ -30,9 +32,17 @@ public class DonationServiceImpl implements DonationService{
 	}
 
 	
-	public Donation createDonation(Donation donation) {
-		// TODO Auto-generated method stub
-		return null;
+	public void createDonation(DonationRequest request) throws UserNotFoundException {
+		User user = userDao.findByUserName(request.getUsername()).orElseThrow(()->
+				new UserNotFoundException());
+		Donation donation = new Donation();
+		donation.setSumm(request.getSumm());
+		donation.setDate(LocalDateTime.now());
+		donation.setDonationName(request.getDonateName());
+		donation.setMessage(request.getMessage());
+		donation.setUser(user);
+		donationDao.save(donation);
+		
 	}
 
 	public void deleteDonation(Long id) {
