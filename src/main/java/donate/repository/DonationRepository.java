@@ -13,4 +13,9 @@ public interface DonationRepository extends JpaRepository<Donation, Long>{
 
 	List<Donation> findAllByUser(User user);
 
+
+
+
+	void deleteByDonateIdAndUser(Long id, User user);
+
 }

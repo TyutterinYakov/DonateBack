@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="personalization")
 public class PersonalizationDonateAlert {
@@ -26,7 +28,9 @@ public class PersonalizationDonateAlert {
 	private BigDecimal summMin;
 	@Column(name="music")
 	private String music;
+	private int time;
 	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REFRESH)
+	@JsonIgnore
 	private User user;
 	
 	public Long getPersonalizationId() {
@@ -59,6 +63,13 @@ public class PersonalizationDonateAlert {
 	public void setUser(User user) {
 		this.user = user;
 	}
+	public int getTime() {
+		return time;
+	}
+	public void setTime(int time) {
+		this.time = time;
+	}
+	
 	
 	
 	

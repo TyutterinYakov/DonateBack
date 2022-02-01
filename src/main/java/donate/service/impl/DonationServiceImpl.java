@@ -3,6 +3,8 @@ package donate.service.impl;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +47,11 @@ public class DonationServiceImpl implements DonationService{
 		
 	}
 
-	public void deleteDonation(Long id) {
-		// TODO Auto-generated method stub
-		
+	@Transactional
+	public void deleteDonation(Long id, String userName) throws UserNotFoundException {
+		User user = userDao.findByUserName(userName).orElseThrow(()->
+				new UserNotFoundException());
+		donationDao.deleteByDonateIdAndUser(id, user);
 	}
 
 
