@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 @Table(name="donations")
@@ -29,6 +31,7 @@ public class Donation {
 	private BigDecimal summ;
 	@Column(name="date")
 	private LocalDateTime date;
+	@JsonIgnore
 	@ManyToOne(cascade=CascadeType.REFRESH, fetch=FetchType.EAGER)
 	private User user;
 	public Long getDonateId() {
