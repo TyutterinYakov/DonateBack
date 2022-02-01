@@ -1,10 +1,13 @@
 package donate.service.impl;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import donate.exception.UserNotFoundException;
 import donate.model.User;
 import donate.repository.UserRepository;
 import donate.service.UserService;
@@ -34,6 +37,15 @@ public class UserServiceImpl implements UserService{
 	public void deleteUser(Long userId) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public User findUserByUserName(String userName) throws UserNotFoundException{
+		Optional<User> userOptional = userDao.findByUserName(userName);
+		if(userOptional.isPresent()) {
+		return userOptional.get();
+		}
+		throw new UserNotFoundException();
 	}
 
 }

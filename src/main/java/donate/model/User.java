@@ -35,7 +35,7 @@ public class User {
 	@Column(name="email")
 	@Email
 	private String email;
-	private boolean active;
+	private boolean active=true;
 	private String profileImage;
 	private BigDecimal balance;
 	@OneToMany(cascade=CascadeType.REMOVE, fetch=FetchType.LAZY)

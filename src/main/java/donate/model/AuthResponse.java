@@ -3,6 +3,12 @@ package donate.model;
 public class AuthResponse {
 	private String token;
 
+	
+	
+	public AuthResponse() {
+		super();
+	}
+
 	public AuthResponse(String token) {
 		super();
 		this.token = token;

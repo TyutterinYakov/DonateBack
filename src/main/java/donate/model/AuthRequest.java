@@ -5,6 +5,12 @@ public class AuthRequest {
 	private String userName;
 	private String password;
 	
+	
+	
+	public AuthRequest() {
+		super();
+	}
+
 	public AuthRequest(String userName, String password) {
 		super();
 		this.userName = userName;
