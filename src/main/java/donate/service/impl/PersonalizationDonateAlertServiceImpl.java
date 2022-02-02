@@ -1,5 +1,6 @@
 package donate.service.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -59,6 +60,29 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 		User user = userDao.findByUserName(name).orElseThrow(()->
 				new UserNotFoundException());
 		return personalizationDao.findByUser(user);
+	}
+
+
+	@Override
+	public PersonalizationDonateAlert getWidgetByUserNameAndSumm(String userName, BigDecimal summ) throws UserNotFoundException {
+		
+		User user = userDao.findByUserName(userName).orElseThrow(()->
+			new UserNotFoundException()
+		);
+		List<PersonalizationDonateAlert> personalization = personalizationDao.findAllByUser(user);
+		if(personalization.size()>0) {
+			PersonalizationDonateAlert widget = new PersonalizationDonateAlert();
+			widget.setSummMin(new BigDecimal(0));
+			for(PersonalizationDonateAlert pr: personalization) {
+				if(pr.getSummMin().floatValue()<summ.floatValue()) {
+					if(widget.getSummMin().floatValue()<pr.getSummMin().floatValue()) {
+					widget=pr;
+					}
+				}
+			}
+			return widget;
+		}
+		return null;
 	}
 
 }

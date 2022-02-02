@@ -15,4 +15,6 @@ public interface PersonalizationDonateAlertRepository extends JpaRepository<Pers
 
 	void deleteByPersonalizationIdAndUser(Long personalizationId, User user);
 
+	List<PersonalizationDonateAlert> findAllByUser(User user);
+
 }

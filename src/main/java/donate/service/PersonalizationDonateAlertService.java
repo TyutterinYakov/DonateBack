@@ -1,5 +1,6 @@
 package donate.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -14,5 +15,6 @@ public interface PersonalizationDonateAlertService {
 	void deletePersonalization(Long personalizationId, String string) throws UserNotFoundException;
 	PersonalizationDonateAlert updatePersonalization(PersonalizationDonateAlert personaliztion);
 	List<PersonalizationDonateAlert> getAllPersonalizationByUser(String name) throws UserNotFoundException;
+	PersonalizationDonateAlert getWidgetByUserNameAndSumm(String userName, BigDecimal summ) throws UserNotFoundException;
 
 }

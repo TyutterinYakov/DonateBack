@@ -66,6 +66,7 @@ public class DonationServiceImpl implements DonationService{
 
 	@Override
 	public Donation getDonationFromUserAndPlay(String username, boolean b) throws UserNotFoundException {
+		System.out.println(username);
 		User user = userDao.findByUserName(username).orElseThrow(()->
 		new UserNotFoundException());
 		Optional<Donation> donation = donationDao.findFirstByUserAndPlayOrderByDonateId(user, b);

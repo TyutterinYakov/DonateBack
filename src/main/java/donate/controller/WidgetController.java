@@ -1,5 +1,6 @@
 package donate.controller;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 
 import org.slf4j.Logger;
@@ -72,6 +73,23 @@ public class WidgetController {
 		} catch(UserNotFoundException e) {
 			logger.error(principal.getName(), e);
 			return new ResponseEntity<>("Пользователь не найден", HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/all/{userName}/{summ}")
+	public ResponseEntity<?> getWidgetByUserAndSumm(@PathVariable("userName") String userName, @PathVariable BigDecimal summ){
+		
+		try {
+			if(summ==null||userName.isEmpty()) {
+				throw new NullPointerException();
+			}
+		return ResponseEntity.ok(personalizationService.getWidgetByUserNameAndSumm(userName, summ));
+		} catch(UserNotFoundException ex){
+			logger.error("Имя неверно", ex);
+			return new ResponseEntity<>("Указано неверное имя", HttpStatus.BAD_REQUEST);
+		} catch(NullPointerException e) {
+			logger.error("Имя или сумма пусты", e);
+			return new ResponseEntity<>("Нет имени или суммы", HttpStatus.BAD_REQUEST);
 		}
 	}
 	
