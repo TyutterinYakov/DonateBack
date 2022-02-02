@@ -1,5 +1,6 @@
 package donate.service.impl;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -66,17 +67,19 @@ public class DonationServiceImpl implements DonationService{
 
 	@Override
 	public Donation getDonationFromUserAndPlay(String username, boolean b) throws UserNotFoundException {
+		Donation d = new Donation();
 		System.out.println(username);
 		User user = userDao.findByUserName(username).orElseThrow(()->
 		new UserNotFoundException());
 		Optional<Donation> donation = donationDao.findFirstByUserAndPlayOrderByDonateId(user, b);
 		if(donation.isPresent()) {
-			Donation d = donation.get();
+			d = donation.get();
 			d.setPlay(true);
 			return donationDao.save(d);
 		}
+		d.setSumm(new BigDecimal(0));
 		
-		return null;
+		return d;
 	}
 
 	

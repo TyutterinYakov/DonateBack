@@ -49,10 +49,6 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 		personalizationDao.deleteByPersonalizationIdAndUser(personalizationId, user);
 	}
 
-	public PersonalizationDonateAlert updatePersonalization(PersonalizationDonateAlert personaliztion) {
-		// TODO Auto-generated method 
-		return null;
-	}
 
 
 	@Override
@@ -74,7 +70,7 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 			PersonalizationDonateAlert widget = new PersonalizationDonateAlert();
 			widget.setSummMin(new BigDecimal(0));
 			for(PersonalizationDonateAlert pr: personalization) {
-				if(pr.getSummMin().floatValue()<summ.floatValue()) {
+				if(pr.getSummMin().floatValue()<=summ.floatValue()) {
 					if(widget.getSummMin().floatValue()<pr.getSummMin().floatValue()) {
 					widget=pr;
 					}
@@ -82,7 +78,28 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 			}
 			return widget;
 		}
-		return null;
+		return new PersonalizationDonateAlert();
+	}
+
+
+	@Override
+	public PersonalizationDonateAlert updatePersonalization(PersonalizationDonateAlert personalization, String userName)
+			throws UserNotFoundException {
+		User user = userDao.findByUserName(userName).orElseThrow(()->
+		new UserNotFoundException()
+	);
+		personalization.setUser(user);
+		return personalizationDao.save(personalization);
+	}
+
+
+	@Override
+	public PersonalizationDonateAlert getPersonalizationByWidgetIdAndUser(Long widgetId, String userName)
+			throws UserNotFoundException {
+		User user = userDao.findByUserName(userName).orElseThrow(()->
+		new UserNotFoundException()
+	);
+		return personalizationDao.findByPersonalizationIdAndUser(widgetId, user);
 	}
 
 }

@@ -13,8 +13,9 @@ public interface PersonalizationDonateAlertService {
 	
 	PersonalizationDonateAlert addPersonalization(PersonalizationDonateAlert personalization, String string) throws UserNotFoundException;
 	void deletePersonalization(Long personalizationId, String string) throws UserNotFoundException;
-	PersonalizationDonateAlert updatePersonalization(PersonalizationDonateAlert personaliztion);
+	PersonalizationDonateAlert updatePersonalization(PersonalizationDonateAlert personaliztion, String string) throws UserNotFoundException;;
 	List<PersonalizationDonateAlert> getAllPersonalizationByUser(String name) throws UserNotFoundException;
 	PersonalizationDonateAlert getWidgetByUserNameAndSumm(String userName, BigDecimal summ) throws UserNotFoundException;
+	PersonalizationDonateAlert getPersonalizationByWidgetIdAndUser(Long widgetId, String name) throws UserNotFoundException;
 
 }

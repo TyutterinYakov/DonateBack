@@ -17,4 +17,6 @@ public interface PersonalizationDonateAlertRepository extends JpaRepository<Pers
 
 	List<PersonalizationDonateAlert> findAllByUser(User user);
 
+	PersonalizationDonateAlert findByPersonalizationIdAndUser(Long widgetId, User user);
+
 }
