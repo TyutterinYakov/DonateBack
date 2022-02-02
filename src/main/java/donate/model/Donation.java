@@ -31,6 +31,7 @@ public class Donation {
 	private BigDecimal summ;
 	@Column(name="date")
 	private LocalDateTime date;
+	private boolean play=false;
 	@JsonIgnore
 	@ManyToOne(cascade=CascadeType.REFRESH, fetch=FetchType.EAGER)
 	private User user;
@@ -70,6 +71,14 @@ public class Donation {
 	public void setUser(User user) {
 		this.user = user;
 	}
+	public boolean isPlay() {
+		return play;
+	}
+	public void setPlay(boolean play) {
+		this.play = play;
+	}
+	
+	
 	
 	
 	

@@ -2,6 +2,7 @@ package donate.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -60,6 +61,21 @@ public class DonationServiceImpl implements DonationService{
 		User user = userDao.findByUserName(name).orElseThrow(()->
 				new UserNotFoundException());
 		return donationDao.findAllByUser(user);
+	}
+
+
+	@Override
+	public Donation getDonationFromUserAndPlay(String username, boolean b) throws UserNotFoundException {
+		User user = userDao.findByUserName(username).orElseThrow(()->
+		new UserNotFoundException());
+		Optional<Donation> donation = donationDao.findFirstByUserAndPlayOrderByDonateId(user, b);
+		if(donation.isPresent()) {
+			Donation d = donation.get();
+			d.setPlay(true);
+			return donationDao.save(d);
+		}
+		
+		return null;
 	}
 
 	

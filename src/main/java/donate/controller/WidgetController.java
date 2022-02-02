@@ -2,6 +2,8 @@ package donate.controller;
 
 import java.security.Principal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,10 +12,13 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import donate.exception.UserNotFoundException;
+import donate.model.PersonalizationDonateAlert;
 import donate.service.PersonalizationDonateAlertService;
 
 @RestController
@@ -21,6 +26,7 @@ import donate.service.PersonalizationDonateAlertService;
 @CrossOrigin("*")
 public class WidgetController {
 	
+	private static final Logger logger = LoggerFactory.getLogger(WidgetController.class);
 	private PersonalizationDonateAlertService personalizationService;
 
 	@Autowired
@@ -53,6 +59,19 @@ public class WidgetController {
 			return new ResponseEntity<>("Нет такого пользователя",HttpStatus.FORBIDDEN);
 		} catch(NullPointerException ex) {
 			return new ResponseEntity<>("Нет имени пользователя", HttpStatus.BAD_REQUEST);
+		}
+	}
+	@PostMapping("/")
+	@PreAuthorize("hasAuthority('user:read')")
+	public ResponseEntity<?> addWidgets(@RequestBody PersonalizationDonateAlert widget, Principal principal){
+		try {
+		return ResponseEntity.ok(personalizationService.addPersonalization(widget, principal.getName()));
+		} catch(NullPointerException ex) {
+			logger.error("Имя в principal не обнаружено", ex);
+			return new ResponseEntity<>("Необходима переавторизация", HttpStatus.FORBIDDEN);
+		} catch(UserNotFoundException e) {
+			logger.error(principal.getName(), e);
+			return new ResponseEntity<>("Пользователь не найден", HttpStatus.BAD_REQUEST);
 		}
 	}
 	

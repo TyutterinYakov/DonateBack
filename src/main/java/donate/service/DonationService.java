@@ -11,5 +11,6 @@ public interface DonationService {
 	void createDonation(DonationRequest request) throws UserNotFoundException;
 	void deleteDonation(Long id, String username) throws UserNotFoundException;
 	List<Donation> getDonationFromUser(String name) throws UserNotFoundException;
+	Donation getDonationFromUserAndPlay(String username, boolean b) throws UserNotFoundException;
 	
 }

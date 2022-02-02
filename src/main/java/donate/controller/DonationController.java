@@ -74,4 +74,20 @@ public class DonationController {
 		return ResponseEntity.ok(HttpStatus.OK);
 	}
 	
+	@GetMapping("/alert/{userName}")
+	public ResponseEntity<?> getAllDonationFromUser(@PathVariable("userName") String username){
+			try {
+				if(username.isEmpty()||username=="") {
+					throw new NullPointerException();
+				}
+				return ResponseEntity.ok(donationService.getDonationFromUserAndPlay(username, false));
+			} catch (UserNotFoundException e) {
+				logger.error(username, e);
+				return new ResponseEntity<>("Username not found",HttpStatus.BAD_REQUEST);
+			} catch(NullPointerException ex) {
+				logger.error("Передано пустое имя", ex);
+				return new ResponseEntity<>("Name is empty",HttpStatus.BAD_REQUEST);
+			}
+	}
+	
 }

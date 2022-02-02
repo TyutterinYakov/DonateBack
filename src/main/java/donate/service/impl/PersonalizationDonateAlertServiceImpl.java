@@ -33,9 +33,11 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 	}
 
 	
-	public PersonalizationDonateAlert addPersonalization(PersonalizationDonateAlert personalization) {
-		// TODO Auto-generated method stub
-		return null;
+	public PersonalizationDonateAlert addPersonalization(PersonalizationDonateAlert personalization, String name) throws UserNotFoundException {
+		User user = userDao.findByUserName(name).orElseThrow(()->
+				new UserNotFoundException());
+		personalization.setUser(user);
+		return personalizationDao.save(personalization);
 	}
 
 
@@ -47,7 +49,7 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 	}
 
 	public PersonalizationDonateAlert updatePersonalization(PersonalizationDonateAlert personaliztion) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method 
 		return null;
 	}
 

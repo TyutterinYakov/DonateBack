@@ -10,7 +10,7 @@ import donate.model.PersonalizationDonateAlert;
 
 public interface PersonalizationDonateAlertService {
 	
-	PersonalizationDonateAlert addPersonalization(PersonalizationDonateAlert personalization);
+	PersonalizationDonateAlert addPersonalization(PersonalizationDonateAlert personalization, String string) throws UserNotFoundException;
 	void deletePersonalization(Long personalizationId, String string) throws UserNotFoundException;
 	PersonalizationDonateAlert updatePersonalization(PersonalizationDonateAlert personaliztion);
 	List<PersonalizationDonateAlert> getAllPersonalizationByUser(String name) throws UserNotFoundException;
