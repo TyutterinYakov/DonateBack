@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import donate.exception.InvalidDataException;
 import donate.exception.UserNotFoundException;
 import donate.model.Donation;
 import donate.service.DonationService;
@@ -69,6 +70,9 @@ public class DonationController {
 		} catch (NullPointerException ex) {
 			logger.error("Нет имени или id доната", ex);
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		} catch(InvalidDataException exception) {
+			logger.error("Неверный id доната", exception);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		
 		return ResponseEntity.ok(HttpStatus.OK);

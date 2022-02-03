@@ -34,6 +34,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		loadUserByUsername(name);
 		User user = userDao.findByUserName(name).orElseThrow(()->
 		new UsernameNotFoundException(name));
+		user.setPassword("");
 		return user;
 	}
 
@@ -60,9 +61,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 	
 	
-	private PasswordEncoder passwordEncoder()
+	public PasswordEncoder passwordEncoder()
 	{
-	    return new BCryptPasswordEncoder();
+	    return new BCryptPasswordEncoder(12);
 	}
 
 

@@ -24,4 +24,9 @@ public interface DonationRepository extends JpaRepository<Donation, Long>{
 
 	Optional<Donation> findFirstByUserAndPlayOrderByDonateId(User user, boolean b);
 
+
+
+
+	List<Donation> findAllByUserOrderByDate(User user);
+
 }

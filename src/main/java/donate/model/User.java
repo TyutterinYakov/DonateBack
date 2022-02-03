@@ -37,7 +37,9 @@ public class User {
 	private String email;
 	private boolean active=true;
 	private String profileImage;
-	private BigDecimal balance;
+	private BigDecimal balance=new BigDecimal(0);
+	private BigDecimal allTimeMoney=new BigDecimal(0);
+	private Long countMessage = 0L; 
 	@OneToMany(cascade=CascadeType.REMOVE, fetch=FetchType.LAZY)
 	@JsonIgnore
 	private List<Donation> donations;
@@ -48,6 +50,15 @@ public class User {
 	private Role role;
 	
 	
+	public User() {
+		super();
+	}
+	public User(String userName, String password, @Email String email) {
+		super();
+		this.userName = userName;
+		this.password = password;
+		this.email = email;
+	}
 	public Long getUserId() {
 		return userId;
 	}
@@ -108,6 +119,19 @@ public class User {
 	public void setRole(Role role) {
 		this.role = role;
 	}
+	public BigDecimal getAllTimeMoney() {
+		return allTimeMoney;
+	}
+	public void setAllTimeMoney(BigDecimal allTimeMoney) {
+		this.allTimeMoney = allTimeMoney;
+	}
+	public Long getCountMessage() {
+		return countMessage;
+	}
+	public void setCountMessage(Long countMessage) {
+		this.countMessage = countMessage;
+	}
+	
 	
 	
 	

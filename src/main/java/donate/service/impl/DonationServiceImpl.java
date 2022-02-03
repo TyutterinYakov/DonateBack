@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import donate.exception.InvalidDataException;
 import donate.exception.UserNotFoundException;
 import donate.model.Donation;
 import donate.model.DonationRequest;
@@ -44,15 +45,28 @@ public class DonationServiceImpl implements DonationService{
 		donation.setDate(LocalDateTime.now());
 		donation.setDonationName(request.getDonateName());
 		donation.setMessage(request.getMessage());
+		BigDecimal balance = user.getBalance().add(request.getSumm());
+		BigDecimal allMoneyTime = user.getAllTimeMoney().add(request.getSumm());
+		Long countMessage = user.getCountMessage();
+		user.setCountMessage(++countMessage);
+		user.setAllTimeMoney(allMoneyTime);
+		user.setBalance(balance);
 		donation.setUser(user);
 		donationDao.save(donation);
 		
 	}
 
 	@Transactional
-	public void deleteDonation(Long id, String userName) throws UserNotFoundException {
+	public void deleteDonation(Long id, String userName) throws UserNotFoundException, InvalidDataException {
 		User user = userDao.findByUserName(userName).orElseThrow(()->
 				new UserNotFoundException());
+		Donation donation = donationDao.findById(id).orElseThrow(()->
+			new InvalidDataException()
+		);
+		BigDecimal allMoneyTime = user.getAllTimeMoney().subtract(donation.getSumm());
+		Long countMessage = user.getCountMessage();
+		user.setCountMessage(--countMessage);
+		user.setAllTimeMoney(allMoneyTime);
 		donationDao.deleteByDonateIdAndUser(id, user);
 	}
 
@@ -61,7 +75,7 @@ public class DonationServiceImpl implements DonationService{
 	public List<Donation> getDonationFromUser(String name) throws UserNotFoundException {
 		User user = userDao.findByUserName(name).orElseThrow(()->
 				new UserNotFoundException());
-		return donationDao.findAllByUser(user);
+		return donationDao.findAllByUserOrderByDate(user);
 	}
 
 
