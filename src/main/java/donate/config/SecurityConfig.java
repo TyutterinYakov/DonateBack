@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.and()
 		.authorizeRequests()
 		.antMatchers("/", "/register", "/donation/alert/*", "/widgets/all/**").permitAll()
-		.antMatchers("/generate-token", "/current-user", "/user/", "/pay/").permitAll()
+		.antMatchers("/generate-token", "/current-user", "/user/", "/pay/**").permitAll()
 		.antMatchers(HttpMethod.OPTIONS)
 		.permitAll()
 		.anyRequest()

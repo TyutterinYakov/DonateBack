@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import donate.exception.InvalidDataException;
 import donate.exception.NotPermissionException;
 import donate.exception.UserFoundException;
 import donate.exception.UserNotFoundException;
@@ -53,6 +54,9 @@ public class ProfileController {
 		} catch (UserFoundException e) {
 			logger.error(user.getUserName(), e);
 			return new ResponseEntity<>("Такой  ник занят", HttpStatus.BAD_REQUEST);
+		} catch (InvalidDataException e) {
+			logger.error(user.getMinSummDonate().toString(), e);
+			return new ResponseEntity<>("Указана сумма меньше допустимой", HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}

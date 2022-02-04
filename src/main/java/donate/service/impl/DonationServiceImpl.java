@@ -37,10 +37,13 @@ public class DonationServiceImpl implements DonationService{
 	}
 
 	
-	public void createDonation(DonationRequest request) throws UserNotFoundException {
+	public void createDonation(DonationRequest request) throws UserNotFoundException, InvalidDataException {
 		User user = userDao.findByUserName(request.getUsername()).orElseThrow(()->
 				new UserNotFoundException());
 		Donation donation = new Donation();
+		if((user.getMinSummDonate()).compareTo(request.getSumm())==1) {
+			throw new InvalidDataException();
+		}
 		donation.setSumm(request.getSumm());
 		donation.setDate(LocalDateTime.now());
 		donation.setDonationName(request.getDonateName());

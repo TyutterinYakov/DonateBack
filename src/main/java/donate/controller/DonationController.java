@@ -44,7 +44,6 @@ public class DonationController {
 		
 		try {
 			List<Donation> donations = donationService.getDonationFromUser(principal.getName());
-			logger.info(donations.toString());
 			return ResponseEntity.ok(donations);
 		} catch (UserNotFoundException e) {
 			logger.error(principal.getName());

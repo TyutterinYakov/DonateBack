@@ -14,7 +14,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -29,17 +31,21 @@ public class User {
 	@Column(name="user_id")
 	private Long userId;
 	@Column(name="user_name")
+	@Size(min=3, max=25)
 	private String userName;
 	@Column(name="password")
+	@Size(min=5, max=25)
 	private String password;
 	@Column(name="email")
 	@Email
+	@Size(min=5, max=25)
 	private String email;
 	private boolean active=true;
 	private String profileImage;
 	private BigDecimal balance=new BigDecimal(0);
 	private BigDecimal allTimeMoney=new BigDecimal(0);
-	private Long countMessage = 0L; 
+	private Long countMessage = 0L;
+	private BigDecimal minSummDonate=new BigDecimal(1);
 	@OneToMany(cascade=CascadeType.REMOVE, fetch=FetchType.LAZY)
 	@JsonIgnore
 	private List<Donation> donations;
@@ -131,6 +137,13 @@ public class User {
 	public void setCountMessage(Long countMessage) {
 		this.countMessage = countMessage;
 	}
+	public BigDecimal getMinSummDonate() {
+		return minSummDonate;
+	}
+	public void setMinSummDonate(BigDecimal minSummDonate) {
+		this.minSummDonate = minSummDonate;
+	}
+	
 	
 	
 	

@@ -9,7 +9,7 @@ import donate.model.DonationRequest;
 
 public interface DonationService {
 
-	void createDonation(DonationRequest request) throws UserNotFoundException;
+	void createDonation(DonationRequest request) throws UserNotFoundException, InvalidDataException;
 	void deleteDonation(Long id, String username) throws UserNotFoundException, InvalidDataException;
 	List<Donation> getDonationFromUser(String name) throws UserNotFoundException;
 	Donation getDonationFromUserAndPlay(String username, boolean b) throws UserNotFoundException;

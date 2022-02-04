@@ -1,5 +1,6 @@
 package donate.service.impl;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import donate.exception.InvalidDataException;
 import donate.exception.NotPermissionException;
 import donate.exception.UserFoundException;
 import donate.exception.UserNotFoundException;
@@ -31,7 +33,7 @@ public class UserServiceImpl implements UserService{
 		this.userDetailsServiceImpl = userDetailsServiceImpl;
 	}
 
-	public void updateUser(User user, String userName) throws UserNotFoundException, NotPermissionException, UserFoundException {
+	public void updateUser(User user, String userName) throws UserNotFoundException, NotPermissionException, UserFoundException, InvalidDataException {
 		User us = userDao.findByUserName(userName).orElseThrow(()->
 			new UserNotFoundException());
 		if(us.getUserId().equals(user.getUserId())) {
@@ -46,6 +48,10 @@ public class UserServiceImpl implements UserService{
 				us.setUserName(user.getUserName());
 				
 			}
+			if(user.getMinSummDonate().compareTo(new BigDecimal(1))==-1) {
+				throw new InvalidDataException();
+			}
+			us.setMinSummDonate(user.getMinSummDonate());
 			userDao.save(us);
 		} else {
 			throw new NotPermissionException();
@@ -65,6 +71,13 @@ public class UserServiceImpl implements UserService{
 		return userOptional.get();
 		}
 		throw new UserNotFoundException();
+	}
+
+	@Override
+	public BigDecimal getMinSummDonateFromUserName(String userName) throws UserNotFoundException {
+		User us = userDao.findByUserName(userName).orElseThrow(()->
+			new UserNotFoundException());
+		return us.getMinSummDonate();
 	}
 
 }
