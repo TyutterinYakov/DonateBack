@@ -35,8 +35,7 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 
 	
 	public PersonalizationDonateAlert addPersonalization(PersonalizationDonateAlert personalization, String name) throws UserNotFoundException {
-		User user = userDao.findByUserName(name).orElseThrow(()->
-				new UserNotFoundException());
+		User user = getUserByUsername(name);
 		personalization.setUser(user);
 		return personalizationDao.save(personalization);
 	}
@@ -44,8 +43,7 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 
 	@Transactional
 	public void deletePersonalization(Long personalizationId, String userName) throws UserNotFoundException{
-		User user = userDao.findByUserName(userName).orElseThrow(()->
-		new UserNotFoundException());
+		User user = getUserByUsername(userName);
 		personalizationDao.deleteByPersonalizationIdAndUser(personalizationId, user);
 	}
 
@@ -53,8 +51,7 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 
 	@Override
 	public List<PersonalizationDonateAlert> getAllPersonalizationByUser(String name) throws UserNotFoundException {
-		User user = userDao.findByUserName(name).orElseThrow(()->
-				new UserNotFoundException());
+		User user = getUserByUsername(name);
 		return personalizationDao.findByUser(user);
 	}
 
@@ -62,9 +59,7 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 	@Override
 	public PersonalizationDonateAlert getWidgetByUserNameAndSumm(String userName, BigDecimal summ) throws UserNotFoundException {
 		
-		User user = userDao.findByUserName(userName).orElseThrow(()->
-			new UserNotFoundException()
-		);
+		User user = getUserByUsername(userName);
 		List<PersonalizationDonateAlert> personalization = personalizationDao.findAllByUser(user);
 		if(personalization.size()>0) {
 			PersonalizationDonateAlert widget = new PersonalizationDonateAlert();
@@ -85,9 +80,7 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 	@Override
 	public PersonalizationDonateAlert updatePersonalization(PersonalizationDonateAlert personalization, String userName)
 			throws UserNotFoundException {
-		User user = userDao.findByUserName(userName).orElseThrow(()->
-		new UserNotFoundException()
-	);
+		User user = getUserByUsername(userName);
 		personalization.setUser(user);
 		return personalizationDao.save(personalization);
 	}
@@ -96,10 +89,17 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 	@Override
 	public PersonalizationDonateAlert getPersonalizationByWidgetIdAndUser(Long widgetId, String userName)
 			throws UserNotFoundException {
-		User user = userDao.findByUserName(userName).orElseThrow(()->
+		User user = getUserByUsername(userName);
+		return personalizationDao.findByPersonalizationIdAndUser(widgetId, user);
+	}
+	
+	
+	
+	
+	private User getUserByUsername(String userName) throws UserNotFoundException {
+		return userDao.findByUserName(userName).orElseThrow(()->
 		new UserNotFoundException()
 	);
-		return personalizationDao.findByPersonalizationIdAndUser(widgetId, user);
 	}
 
 }

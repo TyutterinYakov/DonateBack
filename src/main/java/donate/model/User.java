@@ -34,7 +34,6 @@ public class User {
 	@Size(min=3, max=25)
 	private String userName;
 	@Column(name="password")
-	@Size(min=5, max=25)
 	private String password;
 	@Column(name="email")
 	@Email
@@ -46,12 +45,16 @@ public class User {
 	private BigDecimal allTimeMoney=new BigDecimal(0);
 	private Long countMessage = 0L;
 	private BigDecimal minSummDonate=new BigDecimal(1);
+	private BigDecimal withDrawSumm=new BigDecimal(0);
+	private Long withDrawCount=0L;
 	@OneToMany(cascade=CascadeType.REMOVE, fetch=FetchType.LAZY)
 	@JsonIgnore
 	private List<Donation> donations;
 	@OneToMany(cascade=CascadeType.REMOVE, fetch=FetchType.LAZY)
 	@JsonIgnore
 	private List<PersonalizationDonateAlert> personalizations;
+	@OneToMany(cascade=CascadeType.REMOVE, fetch=FetchType.LAZY)
+	private List<Withdraw> withdraws;
 	@Enumerated(value = EnumType.STRING)
 	private Role role;
 	
@@ -143,6 +146,26 @@ public class User {
 	public void setMinSummDonate(BigDecimal minSummDonate) {
 		this.minSummDonate = minSummDonate;
 	}
+	public List<Withdraw> getWithdraws() {
+		return withdraws;
+	}
+	public void setWithdraws(List<Withdraw> withdraws) {
+		this.withdraws = withdraws;
+	}
+	public BigDecimal getWithDrawSumm() {
+		return withDrawSumm;
+	}
+	public void setWithDrawSumm(BigDecimal withDrawSumm) {
+		this.withDrawSumm = withDrawSumm;
+	}
+	public Long getWithDrawCount() {
+		return withDrawCount;
+	}
+	public void setWithDrawCount(Long withDrawCount) {
+		this.withDrawCount = withDrawCount;
+	}
+	
+	
 	
 	
 	
