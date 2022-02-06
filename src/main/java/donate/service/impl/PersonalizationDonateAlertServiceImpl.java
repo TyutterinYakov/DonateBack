@@ -2,6 +2,7 @@ package donate.service.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -16,6 +17,7 @@ import donate.model.User;
 import donate.repository.PersonalizationDonateAlertRepository;
 import donate.repository.UserRepository;
 import donate.service.PersonalizationDonateAlertService;
+import donate.util.UploadAndRemoveImage;
 
 @Service
 public class PersonalizationDonateAlertServiceImpl implements PersonalizationDonateAlertService {
@@ -44,7 +46,11 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 	@Transactional
 	public void deletePersonalization(Long personalizationId, String userName) throws UserNotFoundException{
 		User user = getUserByUsername(userName);
-		personalizationDao.deleteByPersonalizationIdAndUser(personalizationId, user);
+		Optional<PersonalizationDonateAlert> widget =  personalizationDao.findByPersonalizationIdAndUser(personalizationId, user);
+		if(widget.isPresent()) {
+			UploadAndRemoveImage remove = new UploadAndRemoveImage();
+			remove.deleteImage(widget.get().getImage());
+		}
 	}
 
 
@@ -90,7 +96,7 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 	public PersonalizationDonateAlert getPersonalizationByWidgetIdAndUser(Long widgetId, String userName)
 			throws UserNotFoundException {
 		User user = getUserByUsername(userName);
-		return personalizationDao.findByPersonalizationIdAndUser(widgetId, user);
+		return personalizationDao.findByPersonalizationIdAndUser(widgetId, user).get(); //TODO
 	}
 	
 	

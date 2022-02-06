@@ -26,7 +26,7 @@ public class Withdraw {
 	private LocalDateTime dateWithdraw;
 	private BigDecimal summWithdraw;
 	@Enumerated(value = EnumType.STRING)
-	private Status status=Status.SUCCESS;
+	private Status status;
 	@ManyToOne(cascade=CascadeType.REFRESH, fetch=FetchType.EAGER)
 	@JsonIgnore
 	private User user;

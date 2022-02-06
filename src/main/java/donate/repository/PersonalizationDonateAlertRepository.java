@@ -1,6 +1,7 @@
 package donate.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -17,6 +18,6 @@ public interface PersonalizationDonateAlertRepository extends JpaRepository<Pers
 
 	List<PersonalizationDonateAlert> findAllByUser(User user);
 
-	PersonalizationDonateAlert findByPersonalizationIdAndUser(Long widgetId, User user);
+	Optional<PersonalizationDonateAlert> findByPersonalizationIdAndUser(Long widgetId, User user);
 
 }

@@ -1,5 +1,6 @@
 package donate.controller;
 
+import java.io.IOException;
 import java.security.Principal;
 
 import org.slf4j.Logger;
@@ -10,10 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import donate.exception.InvalidDataException;
 import donate.exception.NotPermissionException;
@@ -74,6 +79,34 @@ public class ProfileController {
 			return new ResponseEntity<>("Перезайдите в систему", HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@PostMapping("/image")
+	@PreAuthorize("hasAuthority('user:read')")
+	public ResponseEntity<?> addImageProfile(Principal principal, @RequestParam("image") MultipartFile file){
+		try {
+			if(file.isEmpty()||principal.getName().isEmpty()) {
+				throw new NullPointerException();
+			}
+			userService.updateImageProfile(principal.getName(), file);
+		} catch (UserNotFoundException e) {
+			logger.error(principal.getName(), e);
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		} catch (IOException e) {
+			logger.error("Ошибка загрузки", e);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		} catch (NullPointerException ex) {
+			logger.error("File is empty or name principal");
+			return new ResponseEntity<>("Файл пуст или principal", HttpStatus.FORBIDDEN);
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@GetMapping("/image")
+	@PreAuthorize("hasAuthority('user:read')")
+	public MultipartFile getImageProfile(Principal principal) {
+		
+		return userService.getImageProfile(principal.getName());
 	}
 	
 	

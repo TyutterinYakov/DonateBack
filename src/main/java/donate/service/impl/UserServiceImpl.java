@@ -1,5 +1,6 @@
 package donate.service.impl;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Optional;
 
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import donate.exception.InvalidDataException;
 import donate.exception.NotPermissionException;
@@ -17,6 +19,7 @@ import donate.exception.UserNotFoundException;
 import donate.model.User;
 import donate.repository.UserRepository;
 import donate.service.UserService;
+import donate.util.UploadAndRemoveImage;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -34,8 +37,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	public void updateUser(User user, String userName) throws UserNotFoundException, NotPermissionException, UserFoundException, InvalidDataException {
-		User us = userDao.findByUserName(userName).orElseThrow(()->
-			new UserNotFoundException());
+		User us = getUserByUsername(userName);
 		if(us.getUserId().equals(user.getUserId())) {
 			us.setEmail(user.getEmail());
 			if(user.getPassword()!=null&&user.getPassword().trim()!="") {
@@ -59,25 +61,41 @@ public class UserServiceImpl implements UserService{
 	}
 
 	public void deleteUser(String userName) throws UserNotFoundException {
-		User us = userDao.findByUserName(userName).orElseThrow(()->
-			new UserNotFoundException());
+		User us = getUserByUsername(userName);
 		userDao.delete(us);
 	}
 
 	@Override
 	public User findUserByUserName(String userName) throws UserNotFoundException{
-		Optional<User> userOptional = userDao.findByUserName(userName);
-		if(userOptional.isPresent()) {
-		return userOptional.get();
-		}
-		throw new UserNotFoundException();
+		User user = getUserByUsername(userName);
+		return user;
 	}
 
 	@Override
 	public BigDecimal getMinSummDonateFromUserName(String userName) throws UserNotFoundException {
-		User us = userDao.findByUserName(userName).orElseThrow(()->
-			new UserNotFoundException());
+		User us = getUserByUsername(userName);
 		return us.getMinSummDonate();
+	}
+
+	@Override
+	public void updateImageProfile(String name, MultipartFile file) throws UserNotFoundException, IOException {
+		User user = getUserByUsername(name);
+		UploadAndRemoveImage upload = new UploadAndRemoveImage();
+		String fileName = upload.uploadImage(file);
+		user.setProfileImage(fileName);
+		userDao.save(user);
+	}
+	
+	
+	private User getUserByUsername(String userName) throws UserNotFoundException {
+		return userDao.findByUserName(userName).orElseThrow(()->
+		new UserNotFoundException());
+	}
+
+	@Override
+	public MultipartFile getImageProfile(String name) {
+		
+		return null;
 	}
 
 }
