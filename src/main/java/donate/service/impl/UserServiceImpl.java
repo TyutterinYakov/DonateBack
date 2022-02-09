@@ -70,7 +70,11 @@ public class UserServiceImpl implements UserService{
 
 	public void deleteUser(String userName) throws UserNotFoundException {
 		User us = getUserByUsername(userName);
+		UploadAndRemoveImage upload = new UploadAndRemoveImage();
+		String image = us.getProfileImage();
 		userDao.delete(us);
+		upload.deleteImage(image);
+		
 	}
 
 	@Override
