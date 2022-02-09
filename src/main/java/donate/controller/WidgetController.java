@@ -1,7 +1,12 @@
 package donate.controller;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.util.Map;
+
+import javax.persistence.Convert;
+import javax.persistence.Converter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -67,15 +73,23 @@ public class WidgetController {
 	}
 	@PostMapping("/")
 	@PreAuthorize("hasAuthority('user:read')")
-	public ResponseEntity<?> addWidgets(@RequestBody PersonalizationDonateAlert widget, Principal principal){
+	public ResponseEntity<?> addWidgets(@RequestPart("music") String music,
+			@RequestPart("summMin") String summMin, @RequestPart("time") String time, Principal principal, @RequestPart("image") MultipartFile file){
 		try {
-		return ResponseEntity.ok(personalizationService.addPersonalization(widget, principal.getName()));
+			PersonalizationDonateAlert widget = new PersonalizationDonateAlert();
+			widget.setMusic(music);
+			widget.setSummMin(new BigDecimal(summMin));
+			widget.setTime(Integer.parseInt(time));
+			return ResponseEntity.ok(personalizationService.addPersonalization(widget, principal.getName(), file));
 		} catch(NullPointerException ex) {
 			logger.error("Имя в principal не обнаружено", ex);
 			return new ResponseEntity<>("Необходима переавторизация", HttpStatus.FORBIDDEN);
 		} catch(UserNotFoundException e) {
 			logger.error(principal.getName(), e);
 			return new ResponseEntity<>("Пользователь не найден", HttpStatus.BAD_REQUEST);
+		} catch (IOException e) {
+			logger.error("Ошибка загрузки файла", e);
+			return new ResponseEntity<>("Ошибка файла", HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -97,9 +111,15 @@ public class WidgetController {
 	}
 	@PutMapping("/")
 	@PreAuthorize("hasAuthority('user:read')")
-	public ResponseEntity<?> updateWidgets(@RequestBody PersonalizationDonateAlert widget, Principal principal){
+	public ResponseEntity<?> updateWidgets(@RequestPart("personalizationId") String personalizationId, @RequestPart("music") String music,
+			@RequestPart("summMin") String summMin, @RequestPart("time") String time, Principal principal, @RequestPart(name="image", required = false) MultipartFile file){
 		try {
-		return ResponseEntity.ok(personalizationService.updatePersonalization(widget, principal.getName()));
+			PersonalizationDonateAlert widget = new PersonalizationDonateAlert();
+			widget.setPersonalizationId(Long.parseLong(personalizationId));
+			widget.setMusic(music);
+			widget.setSummMin(new BigDecimal(summMin));
+			widget.setTime(Integer.parseInt(time));
+			return ResponseEntity.ok(personalizationService.updatePersonalization(widget, principal.getName(), file));
 		} catch(NullPointerException ex) {
 			logger.error("Имя в principal не обнаружено", ex);
 			return new ResponseEntity<>("Необходима переавторизация", HttpStatus.FORBIDDEN);

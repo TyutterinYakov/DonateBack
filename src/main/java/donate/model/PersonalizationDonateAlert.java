@@ -11,6 +11,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -32,6 +35,7 @@ public class PersonalizationDonateAlert {
 	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REFRESH)
 	@JsonIgnore
 	private User user;
+
 	
 	public Long getPersonalizationId() {
 		return personalizationId;
@@ -69,6 +73,8 @@ public class PersonalizationDonateAlert {
 	public void setTime(int time) {
 		this.time = time;
 	}
+	
+	
 	
 	
 	

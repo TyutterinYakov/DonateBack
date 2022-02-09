@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService{
 		UploadAndRemoveImage upload = new UploadAndRemoveImage();
 		String image = us.getProfileImage();
 		userDao.delete(us);
-		upload.deleteImage(image);
+		upload.deleteImage(image, "profile/");
 		
 	}
 
@@ -93,8 +93,8 @@ public class UserServiceImpl implements UserService{
 	public void updateImageProfile(String name, MultipartFile file) throws UserNotFoundException, IOException {
 		User user = getUserByUsername(name);
 		UploadAndRemoveImage upload = new UploadAndRemoveImage();
-		upload.deleteImage(user.getProfileImage());
-		String fileName = upload.uploadImage(file);
+		upload.deleteImage(user.getProfileImage(), "profile/");
+		String fileName = upload.uploadImage(file, "profile");
 		user.setProfileImage(fileName);
 		userDao.save(user);
 	}

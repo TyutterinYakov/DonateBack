@@ -57,6 +57,7 @@ public class WithdrawController {
 	}
 	
 	@GetMapping("/")
+	@PreAuthorize("hasAuthority('user:read')")
 	public ResponseEntity<?> getAllWithdrawUser(Principal principal){
 		try {
 			return ResponseEntity.ok(withdrawService.getAllWithdraw(principal.getName()));

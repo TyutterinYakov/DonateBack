@@ -1,5 +1,6 @@
 package donate.service.impl;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import donate.exception.UserNotFoundException;
 import donate.model.PersonalizationDonateAlert;
@@ -36,9 +38,11 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 	}
 
 	
-	public PersonalizationDonateAlert addPersonalization(PersonalizationDonateAlert personalization, String name) throws UserNotFoundException {
+	public PersonalizationDonateAlert addPersonalization(PersonalizationDonateAlert personalization, String name, MultipartFile file) throws UserNotFoundException, IOException {
 		User user = getUserByUsername(name);
 		personalization.setUser(user);
+		UploadAndRemoveImage upload = new UploadAndRemoveImage();
+		personalization.setImage(upload.uploadImage(file, "widget"));
 		return personalizationDao.save(personalization);
 	}
 
@@ -49,7 +53,8 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 		Optional<PersonalizationDonateAlert> widget =  personalizationDao.findByPersonalizationIdAndUser(personalizationId, user);
 		if(widget.isPresent()) {
 			UploadAndRemoveImage remove = new UploadAndRemoveImage();
-			remove.deleteImage(widget.get().getImage());
+			remove.deleteImage(widget.get().getImage(), "widget/");
+			personalizationDao.delete(widget.get());
 		}
 	}
 
@@ -84,11 +89,26 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 
 
 	@Override
-	public PersonalizationDonateAlert updatePersonalization(PersonalizationDonateAlert personalization, String userName)
+	public PersonalizationDonateAlert updatePersonalization(PersonalizationDonateAlert personalization, String userName, MultipartFile file)
 			throws UserNotFoundException {
 		User user = getUserByUsername(userName);
-		personalization.setUser(user);
-		return personalizationDao.save(personalization);
+		PersonalizationDonateAlert widget = personalizationDao.findById(personalization.getPersonalizationId()).get(); //TODO
+		if(widget.getUser().equals(user)) {
+			personalization.setImage(widget.getImage());
+			personalization.setUser(user);
+			if(file!=null) {
+				UploadAndRemoveImage upload = new UploadAndRemoveImage();
+				upload.deleteImage(widget.getImage(), "widget/");
+				try {
+					String imageName = upload.uploadImage(file, "widget");
+					personalization.setImage(imageName);
+				} catch (IOException e) { 					//TODO
+					e.printStackTrace();
+				}
+			}
+			return personalizationDao.save(personalization);
+		}
+		return null;
 	}
 
 
