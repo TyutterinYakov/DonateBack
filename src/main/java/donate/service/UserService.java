@@ -1,5 +1,7 @@
 package donate.service;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 
@@ -17,6 +19,6 @@ public interface UserService {
 	public User findUserByUserName(String userName) throws UserNotFoundException;
 	public BigDecimal getMinSummDonateFromUserName(String userName) throws UserNotFoundException;
 	public void updateImageProfile(String name, MultipartFile file) throws UserNotFoundException, IOException;
-	public MultipartFile getImageProfile(String name);
+	public byte[] getImageProfile(String name) throws UserNotFoundException, IOException;
 
 }

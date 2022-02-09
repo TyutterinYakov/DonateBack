@@ -1,8 +1,15 @@
 package donate.service.impl;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
+
+import javax.imageio.ImageIO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +30,7 @@ import donate.util.UploadAndRemoveImage;
 
 @Service
 public class UserServiceImpl implements UserService{
+	private static final String uploadDir = System.getProperty("user.dir")+"/src/main/resources/";
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
 	private UserRepository userDao;
@@ -81,21 +89,24 @@ public class UserServiceImpl implements UserService{
 	public void updateImageProfile(String name, MultipartFile file) throws UserNotFoundException, IOException {
 		User user = getUserByUsername(name);
 		UploadAndRemoveImage upload = new UploadAndRemoveImage();
+		upload.deleteImage(user.getProfileImage());
 		String fileName = upload.uploadImage(file);
 		user.setProfileImage(fileName);
 		userDao.save(user);
 	}
-	
+
+	@Override
+	public byte[] getImageProfile(String name) throws UserNotFoundException, IOException{
+		User user = getUserByUsername(name);
+		File file = new File(uploadDir+"/static/profile/"+user.getProfileImage());
+		Path path = Paths.get(file.toURI());
+		return Files.readAllBytes(path);
+	}
 	
 	private User getUserByUsername(String userName) throws UserNotFoundException {
 		return userDao.findByUserName(userName).orElseThrow(()->
 		new UserNotFoundException());
 	}
 
-	@Override
-	public MultipartFile getImageProfile(String name) {
-		
-		return null;
-	}
 
 }

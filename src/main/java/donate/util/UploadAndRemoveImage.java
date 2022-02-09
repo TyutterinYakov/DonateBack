@@ -10,7 +10,7 @@ import java.util.UUID;
 import org.springframework.web.multipart.MultipartFile;
 
 public class UploadAndRemoveImage {
-	private static final String uploadDir = System.getProperty("user.dir")+"/src/main/resources";
+	private static final String uploadDir = System.getProperty("user.dir")+"/src/main/resources/static/profile";
 	
 	public String uploadImage(MultipartFile file) throws IOException {
 		String imageUUID;
@@ -31,7 +31,9 @@ public class UploadAndRemoveImage {
 	public void deleteImage(String imageName) {
 		if(!imageName.equals("noimage.png")) {
 		File file = new File(uploadDir+"/"+imageName);
-		file.delete();
+		if(file.exists()) {
+			file.delete();
+		}
 		}
 	}
 	

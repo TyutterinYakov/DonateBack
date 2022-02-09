@@ -1,12 +1,16 @@
 package donate.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -31,6 +35,7 @@ import donate.service.UserService;
 @RequestMapping("/profile")
 @CrossOrigin("*")
 public class ProfileController {
+
 
 	private static final Logger logger = LoggerFactory.getLogger(ProfileController.class);
 	private UserService userService;
@@ -104,9 +109,19 @@ public class ProfileController {
 	
 	@GetMapping("/image")
 	@PreAuthorize("hasAuthority('user:read')")
-	public MultipartFile getImageProfile(Principal principal) {
-		
-		return userService.getImageProfile(principal.getName());
+	public ResponseEntity<?> getImageProfile(Principal principal) {
+		try {
+			return ResponseEntity.ok(userService.getImageProfile(principal.getName()));
+		} catch (UserNotFoundException e) {
+			logger.error(principal.getName(), e);
+			return new ResponseEntity<>("Переавторизуйтесь", HttpStatus.FORBIDDEN);
+		} catch (IOException e) {
+			logger.error("Ошибка при чтении файла", e);
+			return new ResponseEntity<>("Обновите страницу", HttpStatus.BAD_REQUEST);
+		} catch(NullPointerException ex) {
+			logger.error("Principal is empty", ex);
+			return new ResponseEntity<>("Переавторизуйтесь", HttpStatus.FORBIDDEN);
+		}
 	}
 	
 	
