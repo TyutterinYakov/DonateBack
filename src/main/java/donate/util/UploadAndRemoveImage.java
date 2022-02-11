@@ -7,8 +7,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import donate.model.User;
+
+@Component
 public class UploadAndRemoveImage {
 	private static final String uploadDir = System.getProperty("user.dir")+"/src/main/resources/static/";
 	
@@ -29,12 +33,20 @@ public class UploadAndRemoveImage {
 	}
 	
 	public void deleteImage(String imageName, String src) {
-		if(!imageName.equals("noimage.png")) {
+		if(imageName!=null) {
+			if(!imageName.equals("noimage.png")) {
+				File file = new File(uploadDir+src+imageName);
+				if(file.exists()) {
+					file.delete();
+				}
+			}
+		}
+	}
+	
+	public byte[] getImage(String imageName, String src) throws IOException {
 		File file = new File(uploadDir+src+imageName);
-		if(file.exists()) {
-			file.delete();
-		}
-		}
+		Path path = Paths.get(file.toURI());
+		return Files.readAllBytes(path);
 	}
 	
 }

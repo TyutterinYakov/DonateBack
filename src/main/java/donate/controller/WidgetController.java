@@ -73,14 +73,13 @@ public class WidgetController {
 	}
 	@PostMapping("/")
 	@PreAuthorize("hasAuthority('user:read')")
-	public ResponseEntity<?> addWidgets(@RequestPart("music") String music,
+	public ResponseEntity<?> addWidgets(@RequestPart("music") MultipartFile music,
 			@RequestPart("summMin") String summMin, @RequestPart("time") String time, Principal principal, @RequestPart("image") MultipartFile file){
 		try {
 			PersonalizationDonateAlert widget = new PersonalizationDonateAlert();
-			widget.setMusic(music);
 			widget.setSummMin(new BigDecimal(summMin));
 			widget.setTime(Integer.parseInt(time));
-			return ResponseEntity.ok(personalizationService.addPersonalization(widget, principal.getName(), file));
+			return ResponseEntity.ok(personalizationService.addPersonalization(widget, principal.getName(), file, music));
 		} catch(NullPointerException ex) {
 			logger.error("Имя в principal не обнаружено", ex);
 			return new ResponseEntity<>("Необходима переавторизация", HttpStatus.FORBIDDEN);
@@ -111,15 +110,14 @@ public class WidgetController {
 	}
 	@PutMapping("/")
 	@PreAuthorize("hasAuthority('user:read')")
-	public ResponseEntity<?> updateWidgets(@RequestPart("personalizationId") String personalizationId, @RequestPart("music") String music,
+	public ResponseEntity<?> updateWidgets(@RequestPart("personalizationId") String personalizationId, @RequestPart(name="music", required = false) MultipartFile music,
 			@RequestPart("summMin") String summMin, @RequestPart("time") String time, Principal principal, @RequestPart(name="image", required = false) MultipartFile file){
 		try {
 			PersonalizationDonateAlert widget = new PersonalizationDonateAlert();
 			widget.setPersonalizationId(Long.parseLong(personalizationId));
-			widget.setMusic(music);
 			widget.setSummMin(new BigDecimal(summMin));
 			widget.setTime(Integer.parseInt(time));
-			return ResponseEntity.ok(personalizationService.updatePersonalization(widget, principal.getName(), file));
+			return ResponseEntity.ok(personalizationService.updatePersonalization(widget, principal.getName(), file, music));
 		} catch(NullPointerException ex) {
 			logger.error("Имя в principal не обнаружено", ex);
 			return new ResponseEntity<>("Необходима переавторизация", HttpStatus.FORBIDDEN);

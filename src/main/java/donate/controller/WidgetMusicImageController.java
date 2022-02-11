@@ -28,7 +28,8 @@ public class WidgetMusicImageController {
 	}
 	@GetMapping("/music/{musicName}")
 	public byte[] getMusicWidget(@PathVariable("musicName") String musicName) throws IOException{
-		File file = new File(uploadDir+musicName);
+		System.out.println(musicName);
+		File file = new File(uploadDir+"music/"+musicName);
 		Path path = Paths.get(file.toURI());
 		return Files.readAllBytes(path);
 	}

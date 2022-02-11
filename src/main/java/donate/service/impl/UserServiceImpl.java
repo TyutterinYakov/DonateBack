@@ -30,18 +30,20 @@ import donate.util.UploadAndRemoveImage;
 
 @Service
 public class UserServiceImpl implements UserService{
-	private static final String uploadDir = System.getProperty("user.dir")+"/src/main/resources/";
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
 	private UserRepository userDao;
 	private UserDetailsServiceImpl userDetailsServiceImpl;
+	private UploadAndRemoveImage imageUtil;
 	
 
 	@Autowired
-	public UserServiceImpl(UserRepository userDao, UserDetailsServiceImpl userDetailsServiceImpl) {
+	public UserServiceImpl(UserRepository userDao, UserDetailsServiceImpl userDetailsServiceImpl,
+			UploadAndRemoveImage imageUtil) {
 		super();
 		this.userDao = userDao;
 		this.userDetailsServiceImpl = userDetailsServiceImpl;
+		this.imageUtil = imageUtil;
 	}
 
 	public void updateUser(User user, String userName) throws UserNotFoundException, NotPermissionException, UserFoundException, InvalidDataException {
@@ -68,12 +70,12 @@ public class UserServiceImpl implements UserService{
 		}
 	}
 
+
 	public void deleteUser(String userName) throws UserNotFoundException {
 		User us = getUserByUsername(userName);
-		UploadAndRemoveImage upload = new UploadAndRemoveImage();
 		String image = us.getProfileImage();
 		userDao.delete(us);
-		upload.deleteImage(image, "profile/");
+		imageUtil.deleteImage(image, "profile/");
 		
 	}
 
@@ -92,9 +94,8 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void updateImageProfile(String name, MultipartFile file) throws UserNotFoundException, IOException {
 		User user = getUserByUsername(name);
-		UploadAndRemoveImage upload = new UploadAndRemoveImage();
-		upload.deleteImage(user.getProfileImage(), "profile/");
-		String fileName = upload.uploadImage(file, "profile");
+		imageUtil.deleteImage(user.getProfileImage(), "profile/");
+		String fileName = imageUtil.uploadImage(file, "profile");
 		user.setProfileImage(fileName);
 		userDao.save(user);
 	}
@@ -102,9 +103,7 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public byte[] getImageProfile(String name) throws UserNotFoundException, IOException{
 		User user = getUserByUsername(name);
-		File file = new File(uploadDir+"/static/profile/"+user.getProfileImage());
-		Path path = Paths.get(file.toURI());
-		return Files.readAllBytes(path);
+		return imageUtil.getImage(user.getProfileImage(), "profile/");
 	}
 	
 	private User getUserByUsername(String userName) throws UserNotFoundException {

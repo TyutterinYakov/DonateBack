@@ -28,21 +28,24 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 	
 	private PersonalizationDonateAlertRepository personalizationDao;
 	private UserRepository userDao;
+	private UploadAndRemoveImage imageUtil;
 	
 	@Autowired
 	public PersonalizationDonateAlertServiceImpl(PersonalizationDonateAlertRepository personalizationDao,
-			UserRepository userDao) {
+			UserRepository userDao, UploadAndRemoveImage imageUtil) {
 		super();
 		this.personalizationDao = personalizationDao;
 		this.userDao = userDao;
+		this.imageUtil = imageUtil;
 	}
 
+
 	
-	public PersonalizationDonateAlert addPersonalization(PersonalizationDonateAlert personalization, String name, MultipartFile file) throws UserNotFoundException, IOException {
+	public PersonalizationDonateAlert addPersonalization(PersonalizationDonateAlert personalization, String name, MultipartFile file, MultipartFile music) throws UserNotFoundException, IOException {
 		User user = getUserByUsername(name);
 		personalization.setUser(user);
-		UploadAndRemoveImage upload = new UploadAndRemoveImage();
-		personalization.setImage(upload.uploadImage(file, "widget"));
+		personalization.setImage(imageUtil.uploadImage(file, "widget"));
+		personalization.setMusic(imageUtil.uploadImage(music, "widget/music"));
 		return personalizationDao.save(personalization);
 	}
 
@@ -52,8 +55,8 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 		User user = getUserByUsername(userName);
 		Optional<PersonalizationDonateAlert> widget =  personalizationDao.findByPersonalizationIdAndUser(personalizationId, user);
 		if(widget.isPresent()) {
-			UploadAndRemoveImage remove = new UploadAndRemoveImage();
-			remove.deleteImage(widget.get().getImage(), "widget/");
+			imageUtil.deleteImage(widget.get().getImage(), "widget/");
+			imageUtil.deleteImage(widget.get().getMusic(), "widget/music/");
 			personalizationDao.delete(widget.get());
 		}
 	}
@@ -89,19 +92,28 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 
 
 	@Override
-	public PersonalizationDonateAlert updatePersonalization(PersonalizationDonateAlert personalization, String userName, MultipartFile file)
+	public PersonalizationDonateAlert updatePersonalization(PersonalizationDonateAlert personalization, String userName, MultipartFile file, MultipartFile music)
 			throws UserNotFoundException {
 		User user = getUserByUsername(userName);
 		PersonalizationDonateAlert widget = personalizationDao.findById(personalization.getPersonalizationId()).get(); //TODO
 		if(widget.getUser().equals(user)) {
 			personalization.setImage(widget.getImage());
+			personalization.setMusic(widget.getMusic());
 			personalization.setUser(user);
 			if(file!=null) {
-				UploadAndRemoveImage upload = new UploadAndRemoveImage();
-				upload.deleteImage(widget.getImage(), "widget/");
+				imageUtil.deleteImage(widget.getImage(), "widget/");
 				try {
-					String imageName = upload.uploadImage(file, "widget");
+					String imageName = imageUtil.uploadImage(file, "widget");
 					personalization.setImage(imageName);
+				} catch (IOException e) { 					//TODO
+					e.printStackTrace();
+				}
+			}
+			if(music!=null) {
+				imageUtil.deleteImage(widget.getMusic(), "widget/music");
+				try {
+					String musicName = imageUtil.uploadImage(music, "widget/music");
+					personalization.setMusic(musicName);
 				} catch (IOException e) { 					//TODO
 					e.printStackTrace();
 				}
