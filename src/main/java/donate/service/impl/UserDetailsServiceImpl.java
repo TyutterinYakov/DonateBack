@@ -33,7 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	public User getUser(String name) throws UsernameNotFoundException {
 		loadUserByUsername(name);
 		User user = userDao.findByUserName(name).orElseThrow(()->
-		new UsernameNotFoundException(name));
+			new UsernameNotFoundException(name));
 		user.setPassword("");
 		return user;
 	}
@@ -50,7 +50,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		
 		Optional<User> local = userDao.findByUserName(user.getUserName());
 		if(local.isPresent()) {
-			
 			throw new UserFoundException();
 		}
 		user.setPassword(this.passwordEncoder().encode(user.getPassword()));

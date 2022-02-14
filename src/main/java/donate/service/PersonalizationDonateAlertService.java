@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import donate.exception.InvalidDataException;
 import donate.exception.UserNotFoundException;
 import donate.model.Donation;
 import donate.model.PersonalizationDonateAlert;
@@ -15,7 +16,7 @@ public interface PersonalizationDonateAlertService {
 	
 	PersonalizationDonateAlert addPersonalization(PersonalizationDonateAlert personalization, String string, MultipartFile file, MultipartFile music) throws UserNotFoundException, IOException;
 	void deletePersonalization(Long personalizationId, String string) throws UserNotFoundException;
-	PersonalizationDonateAlert updatePersonalization(PersonalizationDonateAlert personaliztion, String string, MultipartFile file, MultipartFile music) throws UserNotFoundException;;
+	PersonalizationDonateAlert updatePersonalization(PersonalizationDonateAlert personaliztion, String string, MultipartFile file, MultipartFile music) throws UserNotFoundException, InvalidDataException;;
 	List<PersonalizationDonateAlert> getAllPersonalizationByUser(String name) throws UserNotFoundException;
 	PersonalizationDonateAlert getWidgetByUserNameAndSumm(String userName, BigDecimal summ) throws UserNotFoundException;
 	PersonalizationDonateAlert getPersonalizationByWidgetIdAndUser(Long widgetId, String name) throws UserNotFoundException;

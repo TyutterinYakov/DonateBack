@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import donate.exception.InvalidDataException;
 import donate.exception.UserNotFoundException;
 import donate.model.PersonalizationDonateAlert;
 import donate.model.User;
@@ -93,9 +94,9 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 
 	@Override
 	public PersonalizationDonateAlert updatePersonalization(PersonalizationDonateAlert personalization, String userName, MultipartFile file, MultipartFile music)
-			throws UserNotFoundException {
+			throws UserNotFoundException, InvalidDataException {
 		User user = getUserByUsername(userName);
-		PersonalizationDonateAlert widget = personalizationDao.findById(personalization.getPersonalizationId()).get(); //TODO
+		PersonalizationDonateAlert widget = personalizationDao.findById(personalization.getPersonalizationId()).orElseThrow(InvalidDataException::new);
 		if(widget.getUser().equals(user)) {
 			personalization.setImage(widget.getImage());
 			personalization.setMusic(widget.getMusic());
@@ -105,8 +106,9 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 				try {
 					String imageName = imageUtil.uploadImage(file, "widget");
 					personalization.setImage(imageName);
-				} catch (IOException e) { 					//TODO
-					e.printStackTrace();
+				} catch (IOException e) { 				
+					logger.error("", e);
+					throw new IllegalStateException();
 				}
 			}
 			if(music!=null) {
@@ -114,8 +116,9 @@ public class PersonalizationDonateAlertServiceImpl implements PersonalizationDon
 				try {
 					String musicName = imageUtil.uploadImage(music, "widget/music");
 					personalization.setMusic(musicName);
-				} catch (IOException e) { 					//TODO
-					e.printStackTrace();
+				} catch (IOException e) { 				
+					logger.error("", e);
+					throw new IllegalStateException();
 				}
 			}
 			return personalizationDao.save(personalization);

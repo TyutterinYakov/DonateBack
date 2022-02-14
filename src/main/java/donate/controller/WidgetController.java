@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import donate.exception.InvalidDataException;
 import donate.exception.UserNotFoundException;
 import donate.model.PersonalizationDonateAlert;
 import donate.service.PersonalizationDonateAlertService;
@@ -124,6 +125,9 @@ public class WidgetController {
 		} catch(UserNotFoundException e) {
 			logger.error(principal.getName(), e);
 			return new ResponseEntity<>("Пользователь не найден", HttpStatus.BAD_REQUEST);
+		} catch (InvalidDataException e) {
+			logger.error(personalizationId, e);
+			return new ResponseEntity<>("Виджет не найден", HttpStatus.BAD_REQUEST);
 		}
 	}
 	@GetMapping("/{widgetId}")

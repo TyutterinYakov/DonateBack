@@ -107,8 +107,7 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	private User getUserByUsername(String userName) throws UserNotFoundException {
-		return userDao.findByUserName(userName).orElseThrow(()->
-		new UserNotFoundException());
+		return userDao.findByUserName(userName).orElseThrow(UserNotFoundException::new);
 	}
 
 

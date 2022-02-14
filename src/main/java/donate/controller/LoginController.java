@@ -15,6 +15,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -53,9 +54,6 @@ public class LoginController {
 		} catch(AuthenticationException ex) {
 			logger.error(request.getUserName(), ex);
 			return new ResponseEntity<>("Неправильный логин/пароль", HttpStatus.FORBIDDEN);
-		} catch(UserNotFoundException ex) {
-			logger.error(request.getUserName(), ex);
-			return new ResponseEntity<>("Пользователь с таким логином не найден", HttpStatus.FORBIDDEN);
 		}
 	}
 	
@@ -72,7 +70,7 @@ public class LoginController {
 	}
 	
 	@PostMapping("/register")
-	public ResponseEntity<?> createUser(@RequestBody @Valid User user, BindingResult result) {
+	public ResponseEntity<?> createUser(@RequestBody @Valid User user, BindingResult result) throws InvalidDataException {
 		try {
 			if(result.hasErrors()) {
 				throw new InvalidDataException();
@@ -81,12 +79,24 @@ public class LoginController {
 		} catch(UserFoundException ex) {
 			logger.error(user.toString(), ex);
 			return new ResponseEntity<>("Такой пользователь уже есть", HttpStatus.BAD_REQUEST);
-		} catch (InvalidDataException e) {
-			logger.error(user.toString(), e);
-			return new ResponseEntity<>("Введены неверные данные", HttpStatus.BAD_REQUEST);
 		}
-		
-		
+	}
+	
+	
+	@ExceptionHandler
+	public ResponseEntity<Void> userNotFoundException(UserNotFoundException ex){
+		logger.error("",ex);
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+	}
+	@ExceptionHandler
+	public ResponseEntity<Void> nullPointerException(NullPointerException ex){
+		logger.error("",ex);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+	}
+	@ExceptionHandler
+	public ResponseEntity<Void> invalidDataException(InvalidDataException ex){
+		logger.error("",ex);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 	}
 	
 	
