@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="donations")
-public class Donation {
+public class DonationEntity {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="donate_id")
@@ -34,7 +34,7 @@ public class Donation {
 	private boolean play=false;
 	@JsonIgnore
 	@ManyToOne(cascade=CascadeType.REFRESH, fetch=FetchType.EAGER)
-	private User user;
+	private UserEntity user;
 	public Long getDonateId() {
 		return donateId;
 	}
@@ -65,10 +65,10 @@ public class Donation {
 	public void setDate(LocalDateTime date) {
 		this.date = date;
 	}
-	public User getUser() {
+	public UserEntity getUser() {
 		return user;
 	}
-	public void setUser(User user) {
+	public void setUser(UserEntity user) {
 		this.user = user;
 	}
 	public boolean isPlay() {

@@ -16,8 +16,8 @@ import donate.api.exception.BadRequestException;
 import donate.api.exception.UserNotFoundException;
 import donate.api.model.DonationRequest;
 import donate.api.service.DonationService;
-import donate.store.entity.Donation;
-import donate.store.entity.User;
+import donate.store.entity.DonationEntity;
+import donate.store.entity.UserEntity;
 import donate.store.repository.DonationRepository;
 import donate.store.repository.UserRepository;
 
@@ -38,9 +38,9 @@ public class DonationServiceImpl implements DonationService{
 
 	
 	public void createDonation(DonationRequest request) {
-		User user = userDao.findByUserName(request.getUsername()).orElseThrow(()->
+		UserEntity user = userDao.findByUserName(request.getUsername()).orElseThrow(()->
 				new UserNotFoundException());
-		Donation donation = new Donation();
+		DonationEntity donation = new DonationEntity();
 		if((user.getMinSummDonate()).compareTo(request.getSumm())==1) {
 			throw new BadRequestException();
 		}
@@ -61,9 +61,9 @@ public class DonationServiceImpl implements DonationService{
 
 	@Transactional
 	public void deleteDonation(Long id, String userName) {
-		User user = userDao.findByUserName(userName).orElseThrow(()->
+		UserEntity user = userDao.findByUserName(userName).orElseThrow(()->
 				new UserNotFoundException());
-		Donation donation = donationDao.findById(id).orElseThrow(()->
+		DonationEntity donation = donationDao.findById(id).orElseThrow(()->
 			new BadRequestException()
 		);
 		BigDecimal allMoneyTime = user.getAllTimeMoney().subtract(donation.getSumm());
@@ -75,20 +75,20 @@ public class DonationServiceImpl implements DonationService{
 
 
 	@Override
-	public List<Donation> getDonationFromUser(String name) {
-		User user = userDao.findByUserName(name).orElseThrow(()->
+	public List<DonationEntity> getDonationFromUser(String name) {
+		UserEntity user = userDao.findByUserName(name).orElseThrow(()->
 				new UserNotFoundException());
 		return donationDao.findAllByUserOrderByDate(user);
 	}
 
 
 	@Override
-	public Donation getDonationFromUserAndPlay(String username, boolean b) {
-		Donation d = new Donation();
+	public DonationEntity getDonationFromUserAndPlay(String username, boolean b) {
+		DonationEntity d = new DonationEntity();
 		System.out.println(username);
-		User user = userDao.findByUserName(username).orElseThrow(()->
+		UserEntity user = userDao.findByUserName(username).orElseThrow(()->
 			new UserNotFoundException());
-		Optional<Donation> donation = donationDao.findFirstByUserAndPlayOrderByDonateId(user, b);
+		Optional<DonationEntity> donation = donationDao.findFirstByUserAndPlayOrderByDonateId(user, b);
 		if(donation.isPresent()) {
 			d = donation.get();
 			d.setPlay(true);

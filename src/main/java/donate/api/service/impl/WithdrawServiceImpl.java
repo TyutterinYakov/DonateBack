@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import donate.api.exception.UserNotFoundException;
 import donate.api.service.WithdrawService;
 import donate.store.entity.Status;
-import donate.store.entity.User;
-import donate.store.entity.Withdraw;
+import donate.store.entity.UserEntity;
+import donate.store.entity.WithdrawEntity;
 import donate.store.repository.UserRepository;
 import donate.store.repository.WithdrawRepository;
 
@@ -29,9 +29,9 @@ public class WithdrawServiceImpl implements WithdrawService{
 	}
 
 	@Override
-	public Withdraw createWithdraw(String userName, BigDecimal summWithdraw) throws UserNotFoundException {
-		User user = getUserByUsername(userName);
-		Withdraw withdraw = new Withdraw();
+	public WithdrawEntity createWithdraw(String userName, BigDecimal summWithdraw) throws UserNotFoundException {
+		UserEntity user = getUserByUsername(userName);
+		WithdrawEntity withdraw = new WithdrawEntity();
 		withdraw.setDateWithdraw(LocalDateTime.now());
 		withdraw.setSummWithdraw(summWithdraw);
 		withdraw.setUser(user);
@@ -47,14 +47,14 @@ public class WithdrawServiceImpl implements WithdrawService{
 	}
 
 	@Override
-	public List<Withdraw> getAllWithdraw(String userName) throws UserNotFoundException {
+	public List<WithdrawEntity> getAllWithdraw(String userName) throws UserNotFoundException {
 		return withdrawDao.findAllByUserOrderByDateWithdraw(getUserByUsername(userName));
 	}
 	
 	
 	
 	
-	private User getUserByUsername(String userName) throws UserNotFoundException {
+	private UserEntity getUserByUsername(String userName) throws UserNotFoundException {
 		return userDao.findByUserName(userName).orElseThrow(()->
 		new UserNotFoundException()
 	);

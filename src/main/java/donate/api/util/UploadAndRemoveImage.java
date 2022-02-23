@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import donate.api.exception.BadRequestException;
-import donate.store.entity.User;
+import donate.store.entity.UserEntity;
 
 @Component
 public class UploadAndRemoveImage {

@@ -20,17 +20,16 @@ public class ExceptionController {
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
 	}
 	@ExceptionHandler
-	public ResponseEntity<?> nullPointerException(NullPointerException ex){
-		logger.error(ex.getMessage(),ex);
-		return new ResponseEntity<>(ex.getMessage() ,HttpStatus.FORBIDDEN);
-	}
-	@ExceptionHandler
 	public ResponseEntity<?> badRequestExceptionException(BadRequestException ex){
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 	@ExceptionHandler
-	public ResponseEntity<?> AuthenticationException(AuthenticationException ex){
+	public ResponseEntity<?> authenticationException(AuthenticationException ex){
 		return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+	}
+	@ExceptionHandler
+	public ResponseEntity<?> userFoundException(UserFoundException ex){
+		return new ResponseEntity<>(ex.getMessage(), HttpStatus.FOUND);
 	}
 	
 }

@@ -23,10 +23,10 @@ import org.springframework.web.multipart.MultipartFile;
 import donate.api.exception.BadRequestException;
 import donate.api.exception.UserNotFoundException;
 import donate.api.service.PersonalizationDonateAlertService;
-import donate.store.entity.PersonalizationDonateAlert;
+import donate.store.entity.WidgetEntity;
 
 @RestController
-@RequestMapping("/widgets")
+@RequestMapping
 @CrossOrigin("*")
 public class WidgetController {
 	
@@ -39,47 +39,57 @@ public class WidgetController {
 		this.personalizationService = personalizationService;
 	}
 	
-	@GetMapping("/")
+	public static final String GET_WIDGETS_BY_PRINCIPAL_USER = "/api/user/widget";
+	public static final String DELETE_WIDGET_BY_PRINCIPAL_USER_AND_WIDGET_ID = "/api/user/widget/{widgetId}";
+	public static final String ADD_WIDGET_BY_PRINCIPAL_USER = "/api/user/widget";
+	public static final String GET_WIDGET_BY_USERNAME_AND_SUMM_DONATE = "/api/user/widget/donate/{userName}/{summ}";
+	public static final String UPDATE_WIDGET_BY_PRINCIPAL_USER = "/api/user/widget";
+	public static final String GET_WIDGET_BY_PRINCIPAL_USER_AND_WIDGET_ID = "/api/user/widget/{widgetId}";
+	
+	@GetMapping(GET_WIDGETS_BY_PRINCIPAL_USER)
 	@PreAuthorize("hasAuthority('user:read')")
 	public ResponseEntity<?> getWidgets(Principal principal){
-		return ResponseEntity.ok(personalizationService.getAllPersonalizationByUser(principal.getName()));
+		return ResponseEntity.ok(
+				personalizationService
+				.getAllPersonalizationByUser(principal.getName()));
 	}
 	
-	@DeleteMapping("/{id}")
+	@DeleteMapping(DELETE_WIDGET_BY_PRINCIPAL_USER_AND_WIDGET_ID)
 	@PreAuthorize("hasAuthority('user:read')")
-	public ResponseEntity<?> deleteWidgets(@PathVariable Long id,Principal principal){
-		personalizationService.deletePersonalization(id, principal.getName());
+	public ResponseEntity<?> deleteWidgets(@PathVariable("widgetId") Long widgetId,Principal principal){
+		personalizationService.deletePersonalization(widgetId, principal.getName());
 		return ResponseEntity.ok(HttpStatus.NO_CONTENT);
 	}
-	@PostMapping("/")
+	@PostMapping(ADD_WIDGET_BY_PRINCIPAL_USER)
 	@PreAuthorize("hasAuthority('user:read')")
 	public ResponseEntity<?> addWidgets(@RequestPart("music") MultipartFile music,
 			@RequestPart("summMin") String summMin, @RequestPart("time") String time, Principal principal, @RequestPart("image") MultipartFile file){
-			PersonalizationDonateAlert widget = new PersonalizationDonateAlert();
-			widget.setSummMin(new BigDecimal(summMin));
-			widget.setTime(Integer.parseInt(time));
-			return ResponseEntity.ok(personalizationService.addPersonalization(widget, principal.getName(), file, music));
+		WidgetEntity widget = new WidgetEntity();
+		widget.setSummMin(new BigDecimal(summMin));
+		widget.setTime(Integer.parseInt(time));
+		return ResponseEntity.ok(
+				personalizationService
+				.addPersonalization(widget, principal.getName(), file, music));
 	}
 	
-	@GetMapping("/all/{userName}/{summ}")
-	public ResponseEntity<?> getWidgetByUserAndSumm(@PathVariable("userName") String userName, @PathVariable BigDecimal summ){
-		
-			if(summ==null||userName.isEmpty()) {
-				throw new NullPointerException();
-			}
+	@GetMapping(GET_WIDGET_BY_USERNAME_AND_SUMM_DONATE)
+	public ResponseEntity<?> getWidgetByUserAndSumm(@PathVariable("userName") String userName, @PathVariable("summ") BigDecimal summ){
+		if(summ==null||userName.isEmpty()) {
+			throw new BadRequestException("Сумма и имя не могут быть пустыми");
+		}
 		return ResponseEntity.ok(personalizationService.getWidgetByUserNameAndSumm(userName, summ));
 	}
-	@PutMapping("/")
+	@PutMapping(UPDATE_WIDGET_BY_PRINCIPAL_USER)
 	@PreAuthorize("hasAuthority('user:read')")
 	public ResponseEntity<?> updateWidgets(@RequestPart("personalizationId") String personalizationId, @RequestPart(name="music", required = false) MultipartFile music,
 			@RequestPart("summMin") String summMin, @RequestPart("time") String time, Principal principal, @RequestPart(name="image", required = false) MultipartFile file){
-			PersonalizationDonateAlert widget = new PersonalizationDonateAlert();
-			widget.setPersonalizationId(Long.parseLong(personalizationId));
-			widget.setSummMin(new BigDecimal(summMin));
-			widget.setTime(Integer.parseInt(time));
-			return ResponseEntity.ok(personalizationService.updatePersonalization(widget, principal.getName(), file, music));
+		WidgetEntity widget = new WidgetEntity();
+		widget.setPersonalizationId(Long.parseLong(personalizationId));
+		widget.setSummMin(new BigDecimal(summMin));
+		widget.setTime(Integer.parseInt(time));
+		return ResponseEntity.ok(personalizationService.updatePersonalization(widget, principal.getName(), file, music));
 	}
-	@GetMapping("/{widgetId}")
+	@GetMapping(GET_WIDGET_BY_PRINCIPAL_USER_AND_WIDGET_ID)
 	@PreAuthorize("hasAuthority('user:read')")
 	public ResponseEntity<?> getWidget(@PathVariable Long widgetId, Principal principal){
 		return ResponseEntity.ok(personalizationService.getPersonalizationByWidgetIdAndUser(widgetId, principal.getName()));

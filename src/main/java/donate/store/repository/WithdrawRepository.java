@@ -5,14 +5,14 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import donate.store.entity.User;
-import donate.store.entity.Withdraw;
+import donate.store.entity.UserEntity;
+import donate.store.entity.WithdrawEntity;
 
 @Repository
-public interface WithdrawRepository extends JpaRepository<Withdraw, Long>{
+public interface WithdrawRepository extends JpaRepository<WithdrawEntity, Long>{
 
-	List<Withdraw> findAllByUser(User user);
+	List<WithdrawEntity> findAllByUser(UserEntity user);
 
-	List<Withdraw> findAllByUserOrderByDateWithdraw(User userByUsername);
+	List<WithdrawEntity> findAllByUserOrderByDateWithdraw(UserEntity userByUsername);
 
 }

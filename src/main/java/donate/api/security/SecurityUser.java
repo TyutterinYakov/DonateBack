@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import donate.store.entity.User;
+import donate.store.entity.UserEntity;
 
 public class SecurityUser implements UserDetails {
 
@@ -53,7 +53,7 @@ public class SecurityUser implements UserDetails {
 		return isActive;
 	}
 
-	public static UserDetails fromUser(User user) {
+	public static UserDetails fromUser(UserEntity user) {
 		
 		return new org.springframework.security.core.userdetails.User(
 				user.getUserName(),

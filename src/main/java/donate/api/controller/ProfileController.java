@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import donate.api.exception.BadRequestException;
 import donate.api.exception.UserNotFoundException;
 import donate.api.service.UserService;
-import donate.store.entity.User;
+import donate.store.entity.UserEntity;
 
 @RestController
 @RequestMapping
@@ -46,7 +46,7 @@ public class ProfileController {
 	
 	@PutMapping(UPDATE_USER_PROFILE_BY_USER_PRINCIPAL)
 	@PreAuthorize("hasAuthority('user:read')")
-	public ResponseEntity<?> updateProfile(@RequestBody User user, Principal principal) {
+	public ResponseEntity<?> updateProfile(@RequestBody UserEntity user, Principal principal) {
 		userService.updateUser(user, principal.getName());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -61,8 +61,8 @@ public class ProfileController {
 	@PostMapping(UPDATE_OR_ADD_USER_IMAGE_PROFILE_BY_USER_PRINCIPAL)
 	@PreAuthorize("hasAuthority('user:read')")
 	public ResponseEntity<?> addImageProfile(Principal principal, @RequestParam("image") MultipartFile file){
-		if(file.isEmpty()||principal.getName().isEmpty()) {
-			throw new NullPointerException();
+		if(file.isEmpty()) {
+			throw new BadRequestException("Файл не передан");
 		}
 		userService.updateImageProfile(principal.getName(), file);
 		return new ResponseEntity<>(HttpStatus.OK);

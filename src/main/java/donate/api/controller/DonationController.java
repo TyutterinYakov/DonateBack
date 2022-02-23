@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import donate.api.service.DonationService;
-import donate.store.entity.Donation;
+import donate.store.entity.DonationEntity;
 
 @RestController
 @RequestMapping
@@ -46,7 +46,7 @@ public class DonationController {
 	@GetMapping(GET_ALL_DONATION_BY_USER_PRINCIPAL)
 	@PreAuthorize("hasAuthority('user:read')")
 	public ResponseEntity<?> getAllDonationFromUser(Principal principal){
-		List<Donation> donations = donationService.getDonationFromUser(principal.getName());
+		List<DonationEntity> donations = donationService.getDonationFromUser(principal.getName());
 		return ResponseEntity.ok(donations);
 	}
 	

@@ -7,18 +7,18 @@ import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import donate.store.entity.PersonalizationDonateAlert;
-import donate.store.entity.User;
+import donate.store.entity.WidgetEntity;
+import donate.store.entity.UserEntity;
 
 @Repository
-public interface PersonalizationDonateAlertRepository extends JpaRepository<PersonalizationDonateAlert, Long>{
+public interface PersonalizationDonateAlertRepository extends JpaRepository<WidgetEntity, Long>{
 
-	Set<PersonalizationDonateAlert> findByUser(User user);
+	Set<WidgetEntity> findByUser(UserEntity user);
 
-	void deleteByPersonalizationIdAndUser(Long personalizationId, User user);
+	void deleteByPersonalizationIdAndUser(Long personalizationId, UserEntity user);
 
-	Set<PersonalizationDonateAlert> findAllByUser(User user);
+	Set<WidgetEntity> findAllByUser(UserEntity user);
 
-	Optional<PersonalizationDonateAlert> findByPersonalizationIdAndUser(Long widgetId, User user);
+	Optional<WidgetEntity> findByPersonalizationIdAndUser(Long widgetId, UserEntity user);
 
 }

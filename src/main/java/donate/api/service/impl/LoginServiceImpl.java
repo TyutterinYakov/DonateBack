@@ -15,7 +15,7 @@ import donate.api.exception.UserNotFoundException;
 import donate.api.model.AuthRequest;
 import donate.api.security.JwtTokenProvider;
 import donate.api.service.UserService;
-import donate.store.entity.User;
+import donate.store.entity.UserEntity;
 
 
 @Service
@@ -38,7 +38,7 @@ public class LoginServiceImpl {
 	@Transactional
 	public Map<Object, Object> getAuthenticate(AuthRequest request){
 			authManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUserName(), request.getPassword()));
-			User user = userService.findUserByUserName(request.getUserName());
+			UserEntity user = userService.findUserByUserName(request.getUserName());
 			if(user==null) {
 				throw new UserNotFoundException(
 						String.format("Пользователь с ником \"%s\" не найден",

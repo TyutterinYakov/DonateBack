@@ -7,26 +7,26 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import donate.store.entity.Donation;
-import donate.store.entity.User;
+import donate.store.entity.DonationEntity;
+import donate.store.entity.UserEntity;
 
 @Repository
-public interface DonationRepository extends JpaRepository<Donation, Long>{
+public interface DonationRepository extends JpaRepository<DonationEntity, Long>{
 
-	List<Donation> findAllByUser(User user);
-
-
-
-
-	void deleteByDonateIdAndUser(Long id, User user);
-
-
-
-	Optional<Donation> findFirstByUserAndPlayOrderByDonateId(User user, boolean b);
+	List<DonationEntity> findAllByUser(UserEntity user);
 
 
 
 
-	List<Donation> findAllByUserOrderByDate(User user);
+	void deleteByDonateIdAndUser(Long id, UserEntity user);
+
+
+
+	Optional<DonationEntity> findFirstByUserAndPlayOrderByDonateId(UserEntity user, boolean b);
+
+
+
+
+	List<DonationEntity> findAllByUserOrderByDate(UserEntity user);
 
 }

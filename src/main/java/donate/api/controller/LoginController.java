@@ -19,11 +19,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import donate.api.dto.UserDto;
 import donate.api.exception.BadRequestException;
 import donate.api.model.AuthRequest;
+import donate.api.model.UserModel;
 import donate.api.service.impl.LoginServiceImpl;
 import donate.api.service.impl.UserDetailsServiceImpl;
-import donate.store.entity.User;
+import donate.store.entity.UserEntity;
 
 @RestController
 @RequestMapping
@@ -59,18 +61,18 @@ public class LoginController {
 	}
 	
 	@GetMapping(GET_CURRENT_USER_BY_PRINCIPAL_USER)
-	public ResponseEntity<User> getCurrentUser(Principal principal) {
+	public ResponseEntity<UserDto> getCurrentUser(Principal principal) {
 		return ResponseEntity.ok(userDetailsService.getUser(principal.getName()));
 	}
 	
 	@PostMapping(REGISTER_USER)
-	public ResponseEntity<?> createUser(@RequestBody @Valid User user, BindingResult result) {
+	public ResponseEntity<?> createUser(@RequestBody @Valid UserModel userModel, BindingResult result) {
 		if(result.hasErrors()) {
 			throw new BadRequestException(
 					String.format(
-							"Ошибка при вводе данных пользователя: %s", user));
+							"Ошибка при вводе данных пользователя: %s", userModel));
 		}
-		return ResponseEntity.ok(userDetailsService.createUser(user));
+		return ResponseEntity.ok(userDetailsService.createUser(userModel));
 	}
 	
 	

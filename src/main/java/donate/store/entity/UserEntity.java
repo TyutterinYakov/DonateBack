@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="users")
-public class User {
+public class UserEntity {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -49,20 +49,22 @@ public class User {
 	private Long withDrawCount=0L;
 	@OneToMany(cascade=CascadeType.REMOVE, fetch=FetchType.LAZY)
 	@JsonIgnore
-	private Set<Donation> donations = new HashSet<>();
+	private Set<DonationEntity> donations = new HashSet<>();
 	@OneToMany(cascade=CascadeType.REMOVE, fetch=FetchType.LAZY)
 	@JsonIgnore
-	private Set<PersonalizationDonateAlert> personalizations = new HashSet<>();
+	private Set<WidgetEntity> personalizations = new HashSet<>();
 	@OneToMany(cascade=CascadeType.REMOVE, fetch=FetchType.LAZY)
-	private Set<Withdraw> withdraws = new HashSet<>();
+	private Set<WithdrawEntity> withdraws = new HashSet<>();
 	@Enumerated(value = EnumType.STRING)
-	private Role role;
+	private Role role = Role.USER;
 	
 	
-	public User() {
+	
+	
+	public UserEntity() {
 		super();
 	}
-	public User(String userName, String password, @Email String email) {
+	public UserEntity(String userName, String password, @Email String email) {
 		super();
 		this.userName = userName;
 		this.password = password;
@@ -146,22 +148,22 @@ public class User {
 	public void setWithDrawCount(Long withDrawCount) {
 		this.withDrawCount = withDrawCount;
 	}
-	public Set<Donation> getDonations() {
+	public Set<DonationEntity> getDonations() {
 		return donations;
 	}
-	public void setDonations(Set<Donation> donations) {
+	public void setDonations(Set<DonationEntity> donations) {
 		this.donations = donations;
 	}
-	public Set<PersonalizationDonateAlert> getPersonalizations() {
+	public Set<WidgetEntity> getPersonalizations() {
 		return personalizations;
 	}
-	public void setPersonalizations(Set<PersonalizationDonateAlert> personalizations) {
+	public void setPersonalizations(Set<WidgetEntity> personalizations) {
 		this.personalizations = personalizations;
 	}
-	public Set<Withdraw> getWithdraws() {
+	public Set<WithdrawEntity> getWithdraws() {
 		return withdraws;
 	}
-	public void setWithdraws(Set<Withdraw> withdraws) {
+	public void setWithdraws(Set<WithdrawEntity> withdraws) {
 		this.withdraws = withdraws;
 	}
 	

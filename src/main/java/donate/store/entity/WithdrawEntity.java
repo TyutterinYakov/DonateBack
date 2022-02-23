@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="withdraw")
-public class Withdraw {
+public class WithdrawEntity {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -29,7 +29,7 @@ public class Withdraw {
 	private Status status;
 	@ManyToOne(cascade=CascadeType.REFRESH, fetch=FetchType.EAGER)
 	@JsonIgnore
-	private User user;
+	private UserEntity user;
 	
 	
 	public Long getId() {
@@ -56,10 +56,10 @@ public class Withdraw {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-	public User getUser() {
+	public UserEntity getUser() {
 		return user;
 	}
-	public void setUser(User user) {
+	public void setUser(UserEntity user) {
 		this.user = user;
 	}
 	

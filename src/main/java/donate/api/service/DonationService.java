@@ -4,13 +4,13 @@ import java.util.List;
 
 import donate.api.exception.UserNotFoundException;
 import donate.api.model.DonationRequest;
-import donate.store.entity.Donation;
+import donate.store.entity.DonationEntity;
 
 public interface DonationService {
 
 	void createDonation(DonationRequest request);
 	void deleteDonation(Long id, String username);
-	List<Donation> getDonationFromUser(String name);
-	Donation getDonationFromUserAndPlay(String username, boolean b);
+	List<DonationEntity> getDonationFromUser(String name);
+	DonationEntity getDonationFromUserAndPlay(String username, boolean b);
 	
 }

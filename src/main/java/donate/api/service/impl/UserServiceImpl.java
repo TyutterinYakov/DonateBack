@@ -15,7 +15,7 @@ import donate.api.exception.UserFoundException;
 import donate.api.exception.UserNotFoundException;
 import donate.api.service.UserService;
 import donate.api.util.UploadAndRemoveImage;
-import donate.store.entity.User;
+import donate.store.entity.UserEntity;
 import donate.store.repository.UserRepository;
 
 @Service
@@ -36,8 +36,8 @@ public class UserServiceImpl implements UserService{
 		this.imageUtil = imageUtil;
 	}
 
-	public void updateUser(User user, String userName) {
-		User us = getUserByUsername(userName);
+	public void updateUser(UserEntity user, String userName) {
+		UserEntity us = getUserByUsername(userName);
 		if(us.getUserId().equals(user.getUserId())) {
 			us.setEmail(user.getEmail());
 			if(user.getPassword()!=null&&user.getPassword().trim()!="") {
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService{
 
 
 	public void deleteUser(String userName) {
-		User us = getUserByUsername(userName);
+		UserEntity us = getUserByUsername(userName);
 		String image = us.getProfileImage();
 		userDao.delete(us);
 		imageUtil.deleteImage(image, "profile/");
@@ -70,20 +70,20 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public User findUserByUserName(String userName){
-		User user = getUserByUsername(userName);
+	public UserEntity findUserByUserName(String userName){
+		UserEntity user = getUserByUsername(userName);
 		return user;
 	}
 
 	@Override
 	public BigDecimal getMinSummDonateFromUserName(String userName) {
-		User us = getUserByUsername(userName);
+		UserEntity us = getUserByUsername(userName);
 		return us.getMinSummDonate();
 	}
 
 	@Override
 	public void updateImageProfile(String name, MultipartFile file) {
-		User user = getUserByUsername(name);
+		UserEntity user = getUserByUsername(name);
 		imageUtil.deleteImage(user.getProfileImage(), "profile/");
 		String fileName = imageUtil.uploadImage(file, "profile");
 		user.setProfileImage(fileName);
@@ -92,11 +92,11 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public byte[] getImageProfile(String name){
-		User user = getUserByUsername(name);
+		UserEntity user = getUserByUsername(name);
 		return imageUtil.getImage(user.getProfileImage(), "profile/");
 	}
 	
-	private User getUserByUsername(String userName) {
+	private UserEntity getUserByUsername(String userName) {
 		return userDao.findByUserName(userName).orElseThrow(UserNotFoundException::new);
 	}
 

@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="personalization")
-public class PersonalizationDonateAlert {
+public class WidgetEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +34,7 @@ public class PersonalizationDonateAlert {
 	private int time;
 	@ManyToOne(fetch=FetchType.EAGER, cascade=CascadeType.REFRESH)
 	@JsonIgnore
-	private User user;
+	private UserEntity user;
 
 	
 	public Long getPersonalizationId() {
@@ -61,10 +61,10 @@ public class PersonalizationDonateAlert {
 	public void setMusic(String music) {
 		this.music = music;
 	}
-	public User getUser() {
+	public UserEntity getUser() {
 		return user;
 	}
-	public void setUser(User user) {
+	public void setUser(UserEntity user) {
 		this.user = user;
 	}
 	public int getTime() {
